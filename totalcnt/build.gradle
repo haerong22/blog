@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'io.bobby'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.json:json:20220924'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'TotalCount'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+}
