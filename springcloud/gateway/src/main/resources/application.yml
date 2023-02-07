@@ -1,0 +1,48 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            message: Gateway Global Filter!!
+        - name: Retry
+          args:
+            retries: 2
+            statuses: INTERNAL_SERVER_ERROR,SERVICE_UNAVAILABLE
+            methods: GET,POST,PUT,PATCH,DELETE
+            backoff:
+              firstBackoff: 100ms
+              maxBackoff: 100ms
+              factor: 2
+      routes:
+        - id: test
+          uri: lb://API-SERVICE
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - name: AuthFilter
+              args:
+                token: test
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
