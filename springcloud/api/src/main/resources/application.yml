@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: api-service
+  main:
+    allow-bean-definition-overriding: true
 
 eureka:
   instance:
@@ -14,3 +16,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+token: test-token
+
+gateway.url: http://localhost:9000
