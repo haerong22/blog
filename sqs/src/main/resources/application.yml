@@ -1,0 +1,13 @@
+cloud:
+  aws:
+    credentials:
+      access-key: <ACCESS-KEY>
+      secret-key: <SECRET-KEY>
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: 'false'
+    sqs:
+      queue:
+        url: https://sqs.ap-northeast-2.amazonaws.com/<ACCOUNT_NO>/test-queue
+        name: test-queue
