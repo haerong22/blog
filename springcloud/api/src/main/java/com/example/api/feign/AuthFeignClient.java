@@ -24,4 +24,7 @@ public interface AuthFeignClient {
 
     @GetMapping("/test/exception")
     String exception();
+
+    @GetMapping("/test/timeout")
+    String timeout();
 }

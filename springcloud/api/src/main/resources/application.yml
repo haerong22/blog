@@ -7,6 +7,13 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 1000
+        readTimeout: 3000
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
@@ -20,3 +27,7 @@ eureka:
 token: test-token
 
 gateway.url: http://localhost:9000
+
+logging:
+  level:
+    com.example.api.feign: DEBUG

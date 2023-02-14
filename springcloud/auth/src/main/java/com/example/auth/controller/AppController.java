@@ -47,4 +47,10 @@ public class AppController {
     public void exception() {
         throw new RuntimeException("error");
     }
+
+    @GetMapping("/test/timeout")
+    public String timeout() throws InterruptedException {
+        Thread.sleep(10000L);
+        return "timeout";
+    }
 }

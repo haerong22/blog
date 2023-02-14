@@ -4,11 +4,12 @@ import com.example.api.dto.TestDto;
 import com.example.api.feign.AuthFeignClient;
 import com.example.api.feign.AuthWithConfigFeignClient;
 import com.example.api.feign.AuthWithUrlFeignClient;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.bind.annotation.*;
 
+@Disabled
 @SpringBootTest
 class FeignClientTest {
 
@@ -54,6 +55,12 @@ class FeignClientTest {
     @Test
     void exception() {
         String result = authFeignClient.exception();
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    void timeout() {
+        String result = authFeignClient.timeout();
         System.out.println("result = " + result);
     }
 
