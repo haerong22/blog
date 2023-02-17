@@ -14,6 +14,34 @@ feign:
         connectTimeout: 1000
         readTimeout: 3000
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failureRateThreshold: 50
+        slowCallRateThreshold: 100
+        slowCallDurationThreshold: 3000
+        permittedNumberOfCallsInHalfOpenState: 4
+        maxWaitDurationInHalfOpenState: 3000
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 1000
+    instances:
+      customCircuitBreaker:
+        baseConfig: default
+    circuit-breaker-aspect-order: 1
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        waitDuration: 1000
+    instances:
+      customRetry:
+        base-config: default
+    retry-aspect-order: 2
+
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

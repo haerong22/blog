@@ -1,6 +1,8 @@
 package com.example.api.feign;
 
 import com.example.api.dto.TestDto;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +24,19 @@ public interface AuthFeignClient {
     @PostMapping("/test/success")
     String withBody(@RequestBody TestDto dto);
 
+    @Retry(name = "customRetry", fallbackMethod = "retryFallback")
     @GetMapping("/test/exception")
     String exception();
 
+    default String retryFallback(Exception e) {
+        return "retryFallback";
+    }
+
+    @CircuitBreaker(name = "customCircuitBreaker", fallbackMethod = "timeoutFallback")
     @GetMapping("/test/timeout")
     String timeout();
+
+    default String timeoutFallback(Throwable e) {
+        return "[AuthFeignClient] timeoutFallback";
+    }
 }

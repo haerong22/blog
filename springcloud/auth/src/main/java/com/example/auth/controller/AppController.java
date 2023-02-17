@@ -2,6 +2,7 @@ package com.example.auth.controller;
 
 import com.example.auth.dto.TestDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -32,8 +33,10 @@ public class AppController {
     }
 
     @GetMapping("/test/success/header")
-    public String withHeader(@RequestHeader String token) {
+    public String withHeader(@RequestHeader String token) throws InterruptedException {
         log.info("header ==> {}", token);
+        Thread.sleep(5000L);
+//        throw new RuntimeException();
         return "withHeader";
     }
 
@@ -50,7 +53,7 @@ public class AppController {
 
     @GetMapping("/test/timeout")
     public String timeout() throws InterruptedException {
-        Thread.sleep(10000L);
+        Thread.sleep(5000L);
         return "timeout";
     }
 }

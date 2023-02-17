@@ -3,13 +3,18 @@ buildscript {
     ext {
         springBootVersion = '2.7.8'
         managerVersion = '1.0.15.RELEASE'
+        sonarqubeVersion = '3.0'
     }
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:${managerVersion}"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeVersion}"
     }
 }
 
@@ -19,6 +24,8 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.sonarqube'
+    apply plugin: 'jacoco'
 
     group 'org.example'
     version '1.0-SNAPSHOT'
@@ -27,12 +34,52 @@ subprojects {
     targetCompatibility = '11'
     compileJava.options.encoding = 'UTF-8'
 
-    repositories {
-        mavenCentral()
+    jacoco {
+        toolVersion = '0.8.7'
     }
 
-    ext {
-        set('springCloudVersion', "2021.0.5")
+    jacocoTestReport {
+        reports{
+            html.enabled=true
+            xml.enabled=true
+            csv.enabled=true
+        }
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                element = 'CLASS'
+
+                limit {
+                    counter = 'BRANCH'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.90
+                }
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy 'jacocoTestReport'
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.host.url", "http://localhost:19000"
+            property "sonar.login", "sqa_9e96f0487669c385ae8c611e8c9ab01b90f1a584"
+            property "sonar.sources", "src"
+            property "sonar.language", "java"
+            property "sonar.sourceEncoding", "UTF-8"
+            property "sonar.test.inclusions", "**/*Test.java"
+            property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+            property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
+        }
+    }
+
+    repositories {
+        mavenCentral()
     }
 
     // 하위 모듈에서 공통으로 사용하는 세팅 추가
@@ -40,6 +87,9 @@ subprojects {
 
     }
 
+    ext {
+        set('springCloudVersion', "2021.0.5")
+    }
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"

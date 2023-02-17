@@ -11,8 +11,8 @@ public class FeignErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        log.info("methodKey => {}", methodKey);
-        log.info("response => {}", response);
+//        log.info("methodKey => {}", methodKey);
+//        log.info("response => {}", response);
         switch (response.status()) {
             case 400:
             case 404:
