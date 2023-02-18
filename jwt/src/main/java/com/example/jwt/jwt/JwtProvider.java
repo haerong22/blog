@@ -59,14 +59,14 @@ public class JwtProvider {
         }
     }
 
-    public Member getClaim(String token) {
+    public MemberInfo getClaim(String token) {
         Claims claimsBody = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .parseClaimsJws(removeBearer(token))
                 .getBody();
 
-        return Member.builder()
+        return MemberInfo.builder()
                 .id(Long.valueOf((Integer) claimsBody.getOrDefault("id", 0L)))
                 .username(claimsBody.getOrDefault("username", "").toString())
                 .build();

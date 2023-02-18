@@ -1,0 +1,16 @@
+###
+GET http://localhost:8080/api/token/none
+
+###
+GET http://localhost:8080/api/token/required
+
+###
+GET http://localhost:8080/api/token/required
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJib2JieSIsImlhdCI6MTY3NjcxODQwMCwiZXhwIjoxNjc2ODA0ODAwfQ.JyoapjwXF2XJW3wWCtQC4ceHOWtb8LjhYZ4ZHECEo58
+
+###
+GET http://localhost:8080/api/token/optional
+
+###
+GET http://localhost:8080/api/token/optional
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJib2JieSIsImlhdCI6MTY3NjcxODQwMCwiZXhwIjoxNjc2ODA0ODAwfQ.JyoapjwXF2XJW3wWCtQC4ceHOWtb8LjhYZ4ZHECEo58
