@@ -1,6 +1,7 @@
 package com.example.jwt.jwt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -10,6 +11,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthorizationArgumentResolver implements HandlerMethodArgumentResolver {
@@ -23,6 +25,8 @@ public class JwtAuthorizationArgumentResolver implements HandlerMethodArgumentRe
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+
+        log.info("JwtAuthorizationArgumentResolver 동작!!");
 
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 

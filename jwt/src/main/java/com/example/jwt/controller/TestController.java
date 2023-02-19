@@ -14,6 +14,7 @@ public class TestController {
 
     @GetMapping("/token/none")
     public String none() {
+        log.info("token none");
         return "success";
     }
 
