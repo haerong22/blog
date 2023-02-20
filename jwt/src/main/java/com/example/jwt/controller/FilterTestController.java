@@ -1,6 +1,7 @@
 package com.example.jwt.controller;
 
 import com.example.jwt.jwt.JwtAuthorization;
+import com.example.jwt.jwt.JwtContext;
 import com.example.jwt.jwt.MemberInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-//@RestController
+@RestController
 @RequestMapping("/api")
-public class TestController {
+public class FilterTestController {
 
     @GetMapping("/token/none")
     public String none() {
@@ -19,18 +20,14 @@ public class TestController {
     }
 
     @GetMapping("/token/required")
-    public String required(
-            @JwtAuthorization MemberInfo memberInfo
-    ) {
-        log.info("token payload : {}", memberInfo);
+    public String required() {
+        log.info("token payload : {}", JwtContext.getMemberInfo());
         return "success";
     }
 
     @GetMapping("/token/optional")
-    public String optional(
-            @JwtAuthorization(required = false) MemberInfo memberInfo
-    ) {
-        log.info("token payload : {}", memberInfo);
+    public String optional() {
+        log.info("token payload : {}", JwtContext.getMemberInfo());
         return "success";
     }
 }
