@@ -10,9 +10,15 @@ import java.util.List;
 @Component
 public class CustomAntPathMatcher extends AntPathMatcher {
 
-    private final List<Resource> resources;
+    private final MemoryResourceRepository memoryResourceRepository;
+    private List<Resource> resources;
 
     public CustomAntPathMatcher(MemoryResourceRepository memoryResourceRepository) {
+        this.memoryResourceRepository = memoryResourceRepository;
+        this.resources = memoryResourceRepository.findAll();
+    }
+
+    public void refresh() {
         this.resources = memoryResourceRepository.findAll();
     }
 
