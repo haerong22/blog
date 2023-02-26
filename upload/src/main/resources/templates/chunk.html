@@ -12,13 +12,15 @@
 
 </body>
 <script>
-    const sendVideoChunks = () => {
+    const sendVideoChunks = async () => {
         const chunkSize = 1024 * 1024; // 1MB
         const file = document.getElementById("video-file").files[0];
         const resultElement = document.getElementById("result");
 
+        const key = await getKey(file)
+
         const totalChunks = Math.ceil(file.size / chunkSize);
-        let currentChunk = 0;
+        let currentChunk = await getLastChunkNumber(key);
 
         const sendNextChunk = () => {
             const start = currentChunk * chunkSize;
@@ -31,7 +33,7 @@
             formData.append("chunkNumber", currentChunk);
             formData.append("totalChunks", totalChunks);
 
-            fetch("/chunk/upload", {
+            fetch("/chunk/upload/" + key, {
                 method: "POST",
                 body: formData
             }).then(resp => {
@@ -50,6 +52,26 @@
         };
 
         sendNextChunk();
+    }
+
+    const getKey = (file) => {
+        // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+        const id = file.name + file.size + file.type;
+        const encoded_id = new TextEncoder().encode(id);
+
+        return crypto.subtle.digest('SHA-256', encoded_id)
+            .then(hash => {
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    const getLastChunkNumber = (key) => {
+        return fetch("/chunk/upload/" + key, {
+            method: "GET",
+        }).then(resp => resp.text()).then(data => data);
     }
 </script>
 </html>
