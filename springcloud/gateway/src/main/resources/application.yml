@@ -26,9 +26,9 @@ spring:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
-            - name: AuthFilter
-              args:
-                token: test
+#            - name: AuthFilter
+#              args:
+#                token: test
 
         - id: auth-service
           uri: lb://AUTH-SERVICE

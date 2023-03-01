@@ -1,0 +1,31 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+#  profiles:
+#    active: native
+
+  cloud:
+    config:
+      server:
+#        native:
+#          search-locations: file://${user.home}/Desktop/kim/study/properties/native
+        git:
+#          uri: file://${user.home}/Desktop/kim/study/properties/git
+#          uri: https://github.com/haerong22/properties.git
+          uri: git@github.com:haerong22/properties.git
+          search-paths: springcloud
+          default-label: main
+          ignore-local-ssh-settings: true
+          strict-host-key-checking: true
+          host-key: AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+          host-key-algorithm: ssh-ed25519
+          private-key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            
+            ...
+            
+            -----END OPENSSH PRIVATE KEY-----

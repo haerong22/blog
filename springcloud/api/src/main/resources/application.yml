@@ -6,6 +6,14 @@ spring:
     name: api-service
   main:
     allow-bean-definition-overriding: true
+  config:
+    import: configserver:http://localhost:8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, refresh
 
 feign:
   client:
