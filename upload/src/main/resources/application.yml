@@ -4,3 +4,10 @@ spring:
     multipart:
       max-file-size: -1
       max-request-size: -1
+
+tus:
+  data:
+    path: "video/tus"
+    expiration: 60000
+  save:
+    path: "video"
