@@ -5,10 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import net.bramp.ffmpeg.probe.FFmpegProbeResult;
+import net.bramp.ffmpeg.probe.FFmpegStream;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Component
@@ -46,5 +51,16 @@ public class FFmpegManager {
                 log.error("Thumbnail Extract Failed => {}", sourcePath, e);
             }
         }
+    }
+
+    public void getDuration(String sourcePath) throws IOException {
+        Path videoPath = Paths.get(sourcePath);
+
+        FFmpegProbeResult probeResult = ffprobe.probe(videoPath.toString());
+
+        FFmpegStream videoStream = probeResult.getStreams().get(0);
+        double durationInSeconds = videoStream.duration;
+
+        log.info("Video length: {} seconds", durationInSeconds);
     }
 }

@@ -63,7 +63,10 @@ public class TusService {
         FileUtils.copyInputStreamToFile(is, file);
 
 //        ThumbnailExtractor.extract(file);
+//        DurationExtractor.extract(file);
+
         ffmpegManager.getThumbnail(file.getAbsolutePath());
+        ffmpegManager.getDuration(file.getAbsolutePath());
     }
 
     private String getVodName(String filename) {
