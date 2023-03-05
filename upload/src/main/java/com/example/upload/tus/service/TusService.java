@@ -1,5 +1,6 @@
 package com.example.upload.tus.service;
 
+import com.example.upload.ffmpeg.FFmpegManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.desair.tus.server.TusFileUploadService;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class TusService {
 
     private final TusFileUploadService tusFileUploadService;
+    private final FFmpegManager ffmpegManager;
 
     @Value("${tus.save.path}")
     private String savePath;
@@ -60,7 +62,8 @@ public class TusService {
 
         FileUtils.copyInputStreamToFile(is, file);
 
-        ThumbnailExtractor.extract(file);
+//        ThumbnailExtractor.extract(file);
+        ffmpegManager.getThumbnail(file.getAbsolutePath());
     }
 
     private String getVodName(String filename) {

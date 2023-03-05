@@ -11,3 +11,8 @@ tus:
     expiration: 60000
   save:
     path: "video"
+
+ffmpeg:
+  path: /usr/local/bin/ffmpeg
+ffprobe:
+  path: /usr/local/bin/ffprobe

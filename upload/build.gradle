@@ -25,6 +25,7 @@ dependencies {
     implementation "me.desair.tus:tus-java-server:1.0.0-2.0"
 
     implementation 'org.jcodec:jcodec-javase:0.2.5'
+    implementation 'net.bramp.ffmpeg:ffmpeg:0.7.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
