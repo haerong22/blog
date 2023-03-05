@@ -59,6 +59,8 @@ public class TusService {
         File file = new File(uploadedPath, vodName);
 
         FileUtils.copyInputStreamToFile(is, file);
+
+        ThumbnailExtractor.extract(file);
     }
 
     private String getVodName(String filename) {

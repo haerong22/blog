@@ -24,6 +24,8 @@ dependencies {
 
     implementation "me.desair.tus:tus-java-server:1.0.0-2.0"
 
+    implementation 'org.jcodec:jcodec-javase:0.2.5'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
