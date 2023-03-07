@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Uploaded vod</title>
+</head>
+<body>
+<div style="display: flex; align-items: start">
+    <div>
+        <h3>normal</h3>
+        <video th:src="${videoUrl}"
+               width="720px"
+               height="480px"
+               autoplay
+               muted
+               controls>
+        </video>
+        <img th:src="${thumbnailUrl}"
+             width="720px"
+             height="480px"
+        />
+    </div>
+    <div>
+        <h3>chunk</h3>
+        <video th:src="${chunkVideoUrl}"
+               width="720px"
+               height="480px"
+               autoplay
+               muted
+               controls>
+        </video>
+        <img th:src="${chunkThumbnailUrl}"
+             width="720px"
+             height="480px"
+        />
+    </div>
+
+</div>
+</body>
+</html>
