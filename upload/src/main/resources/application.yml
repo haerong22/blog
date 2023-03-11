@@ -11,6 +11,8 @@ tus:
     expiration: 60000
   save:
     path: "video"
+  output:
+    path: "video/hls"
 
 ffmpeg:
   path: /usr/local/bin/ffmpeg
