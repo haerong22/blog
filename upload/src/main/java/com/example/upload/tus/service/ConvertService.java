@@ -1,15 +1,18 @@
 package com.example.upload.tus.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import net.bramp.ffmpeg.progress.Progress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConvertService {
@@ -34,8 +37,6 @@ public class ConvertService {
             output.mkdirs();
         }
 
-        FFmpegExecutor executor = new FFmpegExecutor(fFmpeg, fFprobe);
-
         FFmpegBuilder builder = new FFmpegBuilder()
                 .setInput(path)
                 .overrideOutputFiles(true)
@@ -46,7 +47,7 @@ public class ConvertService {
                 .addExtraArgs("-hls_segment_filename", output.getAbsolutePath() + "/master_%08d.ts")
                 .done();
 
-        executor.createJob(builder).run();
+        run(builder);
     }
 
     public void convertResolutions(String date, String filename) {
@@ -58,7 +59,6 @@ public class ConvertService {
             output.mkdirs();
         }
 
-        FFmpegExecutor executor = new FFmpegExecutor(fFmpeg, fFprobe);
 
         FFmpegBuilder builder = new FFmpegBuilder()
                 .setInput(path)
@@ -82,6 +82,19 @@ public class ConvertService {
                 .setFormat("mp4")
                 .done();
 
-        executor.createJob(builder).run();
+        run(builder);
+    }
+
+    private void run(FFmpegBuilder builder) {
+        FFmpegExecutor executor = new FFmpegExecutor(fFmpeg, fFprobe);
+
+        executor
+                .createJob(builder, progress -> {
+                    log.info("progress ==> {}", progress);
+                    if (progress.status.equals(Progress.Status.END)) {
+                        log.info("================================= JOB FINISHED =================================");
+                    }
+                })
+                .run();
     }
 }
