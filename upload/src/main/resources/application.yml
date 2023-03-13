@@ -12,7 +12,9 @@ tus:
   save:
     path: "video"
   output:
-    path: "video/hls"
+    path:
+      hls: "video/hls"
+      mp4: "video/mp4"
 
 ffmpeg:
   path: /usr/local/bin/ffmpeg

@@ -19,16 +19,6 @@ public class HlsController {
 
     private final HlsService hlsService;
 
-    @ResponseBody
-    @PostMapping("/convert/hls/{date}/{filename}")
-    public String convertToHls(
-            @PathVariable String date,
-            @PathVariable String filename
-    ) {
-        hlsService.convertToHls(date, filename);
-        return "success";
-    }
-
     @GetMapping("/hls/play/{key}")
     public String play(
             Model model,
