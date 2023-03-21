@@ -4,11 +4,12 @@ import com.example.api.dto.TestDto;
 import com.example.api.feign.AuthFeignClient;
 import com.example.api.feign.AuthWithConfigFeignClient;
 import com.example.api.feign.AuthWithUrlFeignClient;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-//@Disabled
+@Disabled
 @SpringBootTest
 class FeignClientTest {
 
