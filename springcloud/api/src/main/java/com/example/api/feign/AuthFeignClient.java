@@ -1,5 +1,6 @@
 package com.example.api.feign;
 
+import com.example.api.dto.LoginRequest;
 import com.example.api.dto.TestDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -8,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "auth-service")
 public interface AuthFeignClient {
+
+    @PostMapping("/login")
+    boolean login(@RequestBody LoginRequest request);
 
     @GetMapping("/test/success")
     String ok();

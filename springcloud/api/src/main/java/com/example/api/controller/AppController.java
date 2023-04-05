@@ -16,6 +16,6 @@ public class AppController {
     @GetMapping("/health_check")
     public String healthCheck() {
         log.info("AppInfo: {}", appInfo);
-        return "Api Service is available!";
+        return "Api Service is available! \n" + appInfo;
     }
 }
