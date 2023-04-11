@@ -3,7 +3,13 @@ server:
 
 spring:
   application:
-    name: config-server
+    name: config-service
+
+  sleuth:
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: http://localhost:9411
 
 #  profiles:
 #    active: native
@@ -29,3 +35,17 @@ spring:
             ...
             
             -----END OPENSSH PRIVATE KEY-----
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.springframework.cloud.sleuth: DEBUG
