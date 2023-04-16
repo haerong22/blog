@@ -1,0 +1,21 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery
+
+  sleuth:
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: http://zipkin:9411
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+#logging:
+#  level:
+#    org.springframework.cloud.sleuth: DEBUG

@@ -1,0 +1,1 @@
+INSERT INTO member(username, password) VALUES ('bobby', '1234');

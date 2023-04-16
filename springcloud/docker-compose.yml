@@ -1,0 +1,149 @@
+version: "3.9"
+services:
+  zipkin-mysql:
+    image: openzipkin/zipkin-mysql
+    container_name: zipkin-mysql
+    environment:
+      - MYSQL_DATABASE=zipkin
+      - MYSQL_USER=zipkin
+      - MYSQL_PASSWORD=zipkin
+    ports:
+      - 13306:3306
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=zipkin
+      - MYSQL_HOST=zipkin-mysql
+      - MYSQL_TCP_PORT=3306
+    ports:
+      - 9411:9411
+    depends_on:
+      - zipkin-mysql
+    restart: always
+
+  dependencies:
+    image: openzipkin/zipkin-dependencies
+    container_name: dependencies
+    entrypoint: crond -f
+    environment:
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=zipkin
+      - MYSQL_HOST=zipkin-mysql
+      - MYSQL_TCP_PORT=3306
+    depends_on:
+      - zipkin-mysql
+    restart: always
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    restart: always
+
+  mysql:
+#    user: "1000:50"
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    image: haerong22/mysql
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/conf.d:/etc/mysql/conf.d
+      - ./database/data:/var/lib/mysql
+      - ./database/initdb.d:/docker-entrypoint-initdb.d
+
+  eureka:
+    container_name: discovery
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SOURCE_JAR_FILE=eureka/build/libs/eureka-1.0-SNAPSHOT.jar
+        - PROFILES=dev,docker
+    image: haerong22/discovery
+    ports:
+      - "8761:8761"
+    depends_on:
+      - zipkin
+    restart: always
+
+  config:
+    container_name: config-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SOURCE_JAR_FILE=config/build/libs/config-1.0-SNAPSHOT.jar
+        - PROFILES=dev,docker
+    image: haerong22/config-service
+    depends_on:
+      - eureka
+      - zipkin
+    restart: always
+
+  gateway:
+    container_name: gateway-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SOURCE_JAR_FILE=gateway/build/libs/gateway-1.0-SNAPSHOT.jar
+        - PROFILES=dev,docker
+    image: haerong22/gateway-service
+    depends_on:
+      - eureka
+      - zipkin
+    ports:
+      - "9000:9000"
+    restart: always
+
+  api:
+    container_name: api-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SOURCE_JAR_FILE=api/build/libs/api-1.0-SNAPSHOT.jar
+        - PROFILES=dev,docker
+    image: haerong22/api-service
+    depends_on:
+      - eureka
+      - config
+      - zipkin
+    restart: always
+
+  auth:
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SOURCE_JAR_FILE=auth/build/libs/auth-1.0-SNAPSHOT.jar
+        - PROFILES=dev,docker
+    image: haerong22/auth-service
+    depends_on:
+      - eureka
+      - config
+      - mysql
+      - zipkin
+    restart: always
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    ports:
+      - "3000:3000"

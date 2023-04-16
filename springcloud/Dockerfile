@@ -1,0 +1,10 @@
+FROM openjdk:11-jre-slim
+
+ARG SOURCE_JAR_FILE
+ARG PROFILES
+
+COPY ${SOURCE_JAR_FILE} ./app.jar
+
+ENV TZ=Asia/Seoul
+ENV SPRING_PROFILES_ACTIVE=${PROFILES}
+ENTRYPOINT ["java", "-jar", "./app.jar"]
