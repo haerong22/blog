@@ -6,6 +6,7 @@ RUN cd nginx && ./auto/configure --add-module=../nginx-rtmp-module && make && ma
 
 FROM alpine:3.13.4 as nginx
 RUN apk add --update pcre ffmpeg
+RUN test /tmp/rec && mkdir /tmp/rec
 COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
 ENTRYPOINT ["/usr/local/nginx/sbin/nginx"]
