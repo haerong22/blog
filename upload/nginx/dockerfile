@@ -1,12 +1,19 @@
 FROM alpine:3.13.4 as builder
-RUN apk add --update build-base git bash gcc make g++ zlib-dev linux-headers pcre-dev openssl-dev
+RUN apk add --update build-base git bash gcc make g++ zlib-dev linux-headers pcre-dev openssl-dev luajit-dev
+
+ENV LUAJIT_LIB /usr/lib
+ENV LUAJIT_INC /usr/include/luajit
+
 RUN git clone https://github.com/arut/nginx-rtmp-module.git && \
-    git clone https://github.com/nginx/nginx.git
-RUN cd nginx && ./auto/configure --add-module=../nginx-rtmp-module && make && make install
+    git clone https://github.com/nginx/nginx.git && \
+    git clone https://github.com/openresty/lua-nginx-module.git
+RUN cd nginx && ./auto/configure --add-module=../nginx-rtmp-module --add-module=../lua-nginx-module && make && make install
 
 FROM alpine:3.13.4 as nginx
+
 RUN apk add --update pcre ffmpeg
 RUN test /tmp/rec && mkdir /tmp/rec
+RUN test /tmp/rec/audio && mkdir /tmp/rec/audio
 COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
 ENTRYPOINT ["/usr/local/nginx/sbin/nginx"]
