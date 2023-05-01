@@ -1,0 +1,28 @@
+FROM alpine:3.13.4 as builder
+RUN apk add --update build-base git bash gcc make g++ zlib-dev linux-headers pcre-dev openssl-dev perl curl openssl unzip
+
+#RUN git clone https://github.com/arut/nginx-rtmp-module.git
+RUN #git clone https://github.com/sergey-dryabzhinsky/nginx-rtmp-module.git
+RUN git clone https://github.com/mannyamorim/nginx-rtmp-module.git
+RUN wget https://openresty.org/download/openresty-1.21.4.1.tar.gz && \
+    tar -xvf openresty-1.21.4.1.tar.gz && \
+    cd openresty-1.21.4.1 && \
+    ./configure --add-dynamic-module=../nginx-rtmp-module && \
+    make install
+
+RUN curl -fsSL https://luarocks.org/releases/luarocks-3.7.0.tar.gz | tar xz && \
+    cd luarocks-3.7.0 && \
+    ./configure --prefix=/usr/local/openresty/luajit --with-lua=/usr/local/openresty/luajit/ --lua-suffix=jit-2.1.0-alpha --with-lua-include=/usr/local/openresty/luajit/include/luajit-2.1 && \
+    make build && \
+    make install
+
+RUN /usr/local/openresty/luajit/bin/luarocks install lua-resty-http
+
+RUN apk add --update pcre ffmpeg
+
+RUN test /tmp/rec && mkdir /tmp/rec
+RUN test /tmp/rec/audio && mkdir /tmp/rec/audio
+
+COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+ENTRYPOINT ["/usr/local/openresty/nginx/sbin/nginx"]
+CMD ["-g", "daemon off;"]
