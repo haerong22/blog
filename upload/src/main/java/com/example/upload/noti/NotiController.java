@@ -14,8 +14,8 @@ import java.util.Enumeration;
 public class NotiController {
 
 
-    @RequestMapping("/test")
-    public String call(HttpServletRequest request) {
+    @RequestMapping("/auth")
+    public String call(HttpServletRequest request, String token) {
         System.out.println("servletRequest.getRequestURI() = " + request.getRequestURI());
         System.out.println("request.getQueryString() = " + request.getQueryString());
 
@@ -53,7 +53,9 @@ public class NotiController {
         bodyJson = stringBuilder.toString();
 
         System.out.println("bodyJson = " + bodyJson);
-        return "test!!!1";
+
+        System.out.println("token = " + token);
+        return token.equals("test1234") ? "success" : "fail";
     }
 
     @RequestMapping("/audio")
