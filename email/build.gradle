@@ -21,6 +21,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'jakarta.mail:jakarta.mail-api:2.1.1'
+    implementation 'jakarta.activation:jakarta.activation-api:2.1.2'
+    implementation 'org.eclipse.angus:jakarta.mail:2.0.1'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
