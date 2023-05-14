@@ -1,4 +1,4 @@
-package com.example.email;
+package com.example.email.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class EmailSenderDto {
+
     private String subject;
     private Object content;
     private List<MultipartFile> files;
@@ -17,6 +18,4 @@ public class EmailSenderDto {
     private String fromEmail;
     private String from;
     private String template;
-
-
 }

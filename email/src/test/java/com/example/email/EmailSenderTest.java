@@ -1,5 +1,7 @@
 package com.example.email;
 
+import com.example.email.dto.EmailSenderDto;
+import com.example.email.service.EmailSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,7 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class EmailSenderTest {
 
-    @Autowired EmailSender emailSender;
+    @Autowired
+    EmailSender emailSender;
 
     @Test
     void send() throws InterruptedException {

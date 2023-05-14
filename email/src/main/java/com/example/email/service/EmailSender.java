@@ -1,5 +1,6 @@
-package com.example.email;
+package com.example.email.service;
 
+import com.example.email.dto.EmailSenderDto;
 import jakarta.activation.DataHandler;
 import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
