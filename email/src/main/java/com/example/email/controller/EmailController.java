@@ -22,6 +22,7 @@ public class EmailController {
 
     @PostMapping("/email/spring")
     public String sendEmailWithSpring(EmailSenderDto dto) {
+        dto.jsonToMap();
         springEmailSender.send(dto);
         return "success";
     }
