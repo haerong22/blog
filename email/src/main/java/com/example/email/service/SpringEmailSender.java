@@ -1,6 +1,9 @@
 package com.example.email.service;
 
 import com.example.email.dto.EmailSenderDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,15 +31,20 @@ public class SpringEmailSender {
 
     private final SpringTemplateEngine templateEngine;
     private final JavaMailSender mailSender;
+    private final ObjectMapper objectMapper;
 
     private static final String TEMP_DIR = "./.temp";
     private static final String DEFAULT_EMAIL_ADDRESS = "admin@admin.com";
     private static final String DEFAULT_EMAIL_SENDER = "Admin";
+    private static final String DEFAULT_EMAIL_TEMPLATE = "default_template";
+    private static final ContentType DEFAULT_CONTENT_TYPE = ContentType.TEXT;
 
     @Async
     public void send(
             EmailSenderDto dto
     ) {
+        init(dto);
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
 
@@ -47,22 +56,60 @@ public class SpringEmailSender {
                 helper.addAttachment(file.getName(), file);
             }
 
-            if (dto.getFromEmail() == null) {
-                dto.setFromEmail(DEFAULT_EMAIL_ADDRESS);
-                dto.setFrom(DEFAULT_EMAIL_SENDER);
-            }
-
             helper.setFrom(dto.getFromEmail(), dto.getFrom());
             helper.setTo(dto.getToEmail());
             helper.setSubject(dto.getSubject());
-            helper.setText(getHtmlPart(dto), true);
+
+            switch (dto.getContentType()) {
+                case HTML: {
+                    helper.setText(String.valueOf(dto.getContent()), true);
+                    break;
+                }
+                case JSON: {
+                    helper.setText(getHtmlPart(dto), true);
+                    break;
+                }
+                case TEXT: {
+                    helper.setText(String.valueOf(dto.getContent()), false);
+                    break;
+                }
+            }
 
             mailSender.send(message);
+
             for (File file : files) {
-                file.deleteOnExit();
+                file.delete();
             }
         } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void init(EmailSenderDto dto) {
+        if (Objects.isNull(dto.getFromEmail())) {
+            dto.setFromEmail(DEFAULT_EMAIL_ADDRESS);
+        }
+
+        if (Objects.isNull(dto.getFrom())) {
+            dto.setFrom(DEFAULT_EMAIL_SENDER);
+        }
+
+        if (Objects.isNull(dto.getContentType())) {
+            dto.setContentType(DEFAULT_CONTENT_TYPE);
+        }
+
+        if (Objects.isNull(dto.getTemplate())) {
+            dto.setTemplate(DEFAULT_EMAIL_TEMPLATE);
+        }
+
+        if (dto.getContentType().equals(ContentType.JSON)) {
+            try {
+                dto.setContent(
+                        objectMapper.readValue((String) dto.getContent(), new TypeReference<HashMap<String, Object>>() {})
+                );
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

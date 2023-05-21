@@ -1,13 +1,10 @@
 package com.example.email.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.email.service.ContentType;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Data
@@ -16,6 +13,7 @@ public class EmailSenderDto {
 
     private String subject;
     private Object content;
+    private ContentType contentType;
     private List<MultipartFile> files;
     private String toEmail;
 
@@ -23,12 +21,4 @@ public class EmailSenderDto {
     private String from;
     private String template;
 
-    public void jsonToMap() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            this.content = mapper.readValue((String) this.content, new TypeReference<HashMap<String,Object>>() {});
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
