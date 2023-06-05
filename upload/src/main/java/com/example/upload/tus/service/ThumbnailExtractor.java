@@ -43,4 +43,31 @@ public class ThumbnailExtractor {
 
         return thumbnail.getName();
     }
+
+    public static String extract(File source, long second) throws IOException {
+        File thumbnail = new File(source.getParent(), source.getName().split("\\.")[0] + "_" +second + "." + EXTENSION);
+
+        System.out.println("thumbnail = " + thumbnail);
+        try {
+            FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(source));
+
+            frameGrab.seekToSecondPrecise(second);
+
+            Picture picture = frameGrab.getNativeFrame();
+
+            BufferedImage bi = AWTUtil.toBufferedImage(picture);
+            ImageIO.write(bi, EXTENSION, thumbnail);
+
+        } catch (Exception e) {
+            File defaultImage = new File(DEFAULT_IMAGE_PATH);
+
+            try {
+                FileUtils.copyFile(defaultImage, thumbnail);
+            } catch (Exception ex) {
+                log.info("Thumbnail Extract Failed => {}", source.getPath(), e);
+            }
+        }
+
+        return thumbnail.getName();
+    }
 }

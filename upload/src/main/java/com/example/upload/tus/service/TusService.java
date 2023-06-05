@@ -36,7 +36,7 @@ public class TusService {
             UploadInfo uploadInfo = tusFileUploadService.getUploadInfo(request.getRequestURI());
 
             if (uploadInfo != null && !uploadInfo.isUploadInProgress()) {
-                createFile(tusFileUploadService.getUploadedBytes(request.getRequestURI()), uploadInfo.getFileName());
+                createFileV2(tusFileUploadService.getUploadedBytes(request.getRequestURI()), uploadInfo.getFileName());
 
                 tusFileUploadService.deleteUpload(request.getRequestURI());
 
@@ -68,6 +68,28 @@ public class TusService {
         ffmpegManager.getThumbnail(file.getAbsolutePath());
         ffmpegManager.getDuration(file.getAbsolutePath());
     }
+
+    private void createFileV2(InputStream is, String filename) throws IOException {
+        LocalDate today = LocalDate.now();
+
+        String uploadedPath = savePath + "/" + today;
+
+        String vodName = getVodName(filename);
+
+        File file = new File(uploadedPath, vodName);
+
+        FileUtils.copyInputStreamToFile(is, file);
+
+        double duration = DurationExtractor.extract(file);
+
+        for (long i = 0; i < duration; i++) {
+            System.out.println("duration = " + duration);
+            ThumbnailExtractor.extract(file, i);
+        }
+
+        ThumbnailMerger.merge(filename, (long) duration);
+    }
+
 
     private String getVodName(String filename) {
         String[] split = filename.split("\\.");

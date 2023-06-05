@@ -30,4 +30,10 @@ public class TusController {
         return ResponseEntity.ok(tusService.tusUpload(request, response));
     }
 
+    @ResponseBody
+    @RequestMapping(value = {"/v2/tus/upload", "/v2/tus/upload/**"})
+    public ResponseEntity<String> tusUploadV2(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.ok(tusService.tusUpload(request, response));
+    }
+
 }
