@@ -45,9 +45,9 @@ public class ThumbnailExtractor {
     }
 
     public static String extract(File source, long second) throws IOException {
-        File thumbnail = new File(source.getParent(), source.getName().split("\\.")[0] + "_" +second + "." + EXTENSION);
+        String filename = source.getName().split("\\.")[0];
+        File thumbnail = new File(source.getParent() + "/" + filename, filename + "_" + second + "." + EXTENSION);
 
-        System.out.println("thumbnail = " + thumbnail);
         try {
             FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(source));
 

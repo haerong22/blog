@@ -81,13 +81,13 @@ public class TusService {
         FileUtils.copyInputStreamToFile(is, file);
 
         double duration = DurationExtractor.extract(file);
+        ThumbnailExtractor.extract(file);
 
         for (long i = 0; i < duration; i++) {
-            System.out.println("duration = " + duration);
             ThumbnailExtractor.extract(file, i);
         }
 
-        ThumbnailMerger.merge(filename, (long) duration);
+        ThumbnailMerger.merge(file.getParent(), vodName.split("\\.")[0], (long) duration);
     }
 
 
