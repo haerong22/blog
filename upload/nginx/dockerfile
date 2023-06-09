@@ -20,8 +20,11 @@ RUN /usr/local/openresty/luajit/bin/luarocks install lua-resty-http
 
 RUN apk add --update pcre ffmpeg
 
-RUN test /tmp/rec && mkdir /tmp/rec
-RUN test /tmp/rec/audio && mkdir /tmp/rec/audio
+#RUN test /tmp/rec && mkdir /tmp/rec
+#RUN test /tmp/rec/audio && mkdir /tmp/rec/audio
+#RUN test /tmp/rec/thumbnails && mkdir /tmp/rec/thumbnails
+
+VOLUME /tmp/rec
 
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 ENTRYPOINT ["/usr/local/openresty/nginx/sbin/nginx"]
