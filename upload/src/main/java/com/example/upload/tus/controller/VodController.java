@@ -1,5 +1,6 @@
 package com.example.upload.tus.controller;
 
+import com.example.upload.tus.service.ThumbnailMerger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -21,6 +22,17 @@ public class VodController {
     @Value("${tus.save.path}")
     private String savedPath;
 
+    @ResponseBody
+    @GetMapping("/merge/{date}/{key}")
+    public String mergeThumbnail(
+            @PathVariable String date,
+            @PathVariable String key
+    ) {
+        ThumbnailMerger.merge("video/" + date, key);
+
+        return "success";
+    }
+
     @GetMapping("/play/{date}/{key}")
     public String play(
             Model model,
@@ -36,6 +48,11 @@ public class VodController {
         model.addAttribute("chunkThumbnailUrl", path + ".png");
 
         return "player";
+    }
+
+    @GetMapping("/preview")
+    public String preview() {
+        return "preview";
     }
 
     @ResponseBody

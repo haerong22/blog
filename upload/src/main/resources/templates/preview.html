@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <title>이미지 클리핑</title>
+  <style>
+    .clipped-image {
+      position: relative;
+      overflow: hidden;
+      width: 256px; /* 보여줄 이미지의 가로 크기 */
+      height: 144px; /* 보여줄 이미지의 세로 크기 */
+    }
+
+    .default {
+      position: absolute;
+      clip: rect(0, 256px, 144px, 0);
+
+      /*left: -256px;*/
+      /*clip: rect(0, 512px, 144px, 256px);*/
+
+      /*left: -512px;*/
+      /*clip: rect(0, 768px, 144px, 512px);*/
+    }
+  </style>
+</head>
+<body>
+<div class="clipped-image">
+  <img id="image" style="position: absolute" src="http://localhost:18080/vod/2023-06-08/3123d896f1f74ca2ad8f8e58e10c4573_m.png" alt="Merged Image">
+</div>
+<div id="loading" style="width: 1500px; height: 50px; background-color: aqua"></div>
+<script>
+  const loading = document.getElementById("loading");
+  const image = document.getElementById("image");
+
+  loading.addEventListener("mousemove", (event) => {
+    let x = event.clientX;
+    let second = Math.floor(x / 100);
+
+    let x1 = 256 * second;
+    let x2 = 256 * (second + 1);
+    loading.textContent = x1 + ", " + x2
+
+    image.style.left = "-" + x1 +"px";
+    image.style.clip = "rect(0, " + x2 + "px, 144px, " + x1 + "px)";
+  });
+
+</script>
+</body>
+</html>
