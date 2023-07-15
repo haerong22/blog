@@ -36,7 +36,7 @@ public class TusService {
             UploadInfo uploadInfo = tusFileUploadService.getUploadInfo(request.getRequestURI());
 
             if (uploadInfo != null && !uploadInfo.isUploadInProgress()) {
-                createFileV2(tusFileUploadService.getUploadedBytes(request.getRequestURI()), uploadInfo.getFileName());
+                createFileV3(tusFileUploadService.getUploadedBytes(request.getRequestURI()), uploadInfo.getFileName());
 
                 tusFileUploadService.deleteUpload(request.getRequestURI());
 
@@ -84,10 +84,27 @@ public class TusService {
         ThumbnailExtractor.extract(file);
 
         for (long i = 0; i < duration; i++) {
-            ThumbnailExtractor.extract(file, i);
+            ThumbnailExtractor.extract(file, i, (long) duration);
         }
+    }
 
-        ThumbnailMerger.merge(file.getParent(), vodName.split("\\.")[0], (long) duration);
+    private void createFileV3(InputStream is, String filename) throws IOException {
+        LocalDate today = LocalDate.now();
+
+        String uploadedPath = savePath + "/" + today;
+
+        String vodName = getVodName(filename);
+
+        File file = new File(uploadedPath, vodName);
+
+        FileUtils.copyInputStreamToFile(is, file);
+
+        double duration = DurationExtractor.extract(file);
+        ThumbnailExtractor.extract(file);
+
+        for (long i = 0; i < duration; i++) {
+            ThumbnailExtractor.extract(file, i, (long) duration);
+        }
     }
 
 
