@@ -13,7 +13,7 @@ import java.util.Map;
 public class TotalCount {
 
     private static final String BASE_URL = "https://v2cdn.velog.io/graphql";
-    private static final int LIMIT = 100;
+    private static final int LIMIT = 40;
     private static String username = null;
     private static String accessToken = null;
     private static String refreshToken = null;
@@ -50,18 +50,21 @@ public class TotalCount {
                 JSONObject stats = data.getJSONObject("data").getJSONObject("getStats");
 
                 int total = Integer.parseInt(stats.get("total").toString());
-                int recent = Integer.parseInt(
-                        stats.getJSONArray("count_by_day").getJSONObject(0).get("count").toString()
-                );
-
-                LocalDateTime recentDate = LocalDateTime.parse(
-                        stats.getJSONArray("count_by_day").getJSONObject(0).get("day").toString(),
-                        DateTimeFormatter.ISO_DATE_TIME
-                );
-
                 totalCount += total;
-                if (isToday(recentDate)) {
-                    todayCount += recent;
+
+                if (!stats.getJSONArray("count_by_day").isEmpty()) {
+                    int recent = Integer.parseInt(
+                            stats.getJSONArray("count_by_day").getJSONObject(0).get("count").toString()
+                    );
+
+                    LocalDateTime recentDate = LocalDateTime.parse(
+                            stats.getJSONArray("count_by_day").getJSONObject(0).get("day").toString(),
+                            DateTimeFormatter.ISO_DATE_TIME
+                    );
+
+                    if (isToday(recentDate)) {
+                        todayCount += recent;
+                    }
                 }
             }
 
